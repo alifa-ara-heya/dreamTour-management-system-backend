@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import httpStatus from 'http-status-codes';
 import { UserServices } from "./user.service";
 
-const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /* const { name, email } = req.body;
         const user = await User.create({
@@ -19,14 +19,16 @@ const createUser = async (req: Request, res: Response) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
         console.log(error);
-        res.status(httpStatus.BAD_REQUEST).json({
-            message: `Something went wrong! The error is ${error.message}`
-        })
+        /* res.status(httpStatus.BAD_REQUEST).json({
+            message: `Something went wrong! The error is ${error.message}`,
+            error 
+        }*/
+        next(error) //global error handler
     }
 }
 
 export const UserControllers = {
-    createUser
+    createUser,
 }
 
 // route matching -> controller -> service -> model -> db
