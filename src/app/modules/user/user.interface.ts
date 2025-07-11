@@ -26,7 +26,7 @@ export enum IsActive {
 export interface IUser {
     name: string;
     email: string;
-    password?: string;
+    password?: string; //optional because in google login, user doesn't necessarily need a password
     phone?: string;
     picture?: string;
     address?: string;
