@@ -1,17 +1,24 @@
 import { NextFunction, Request, Response } from "express"
 import { envVars } from "../app/config/env"
+import AppError from "../errorHelpers/AppError"
 // import { ZodError } from 'zod';
 // import httpStatus from 'http-status-codes';
 
 export const globalErrorHandler = (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     err: any,
     req: Request,
     res: Response,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     next: NextFunction) => { // You must keep next in the parameter list for Express to recognize it as your global error handler, even if you don't use it.
-    const statusCode = 500
-    const message = `Something went wrong!${err.message}`
+    let statusCode = 500
+    let message = `Something went wrong!`
+
+    if (err instanceof AppError) {
+        statusCode = err.statusCode;
+        message = err.message
+    } else if (err instanceof Error) {
+        statusCode = 500;
+        message = err.message
+    }
 
     res.status(statusCode).json({
         success: false,

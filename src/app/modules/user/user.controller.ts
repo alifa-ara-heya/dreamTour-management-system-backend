@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import httpStatus from 'http-status-codes';
 import { UserServices } from "./user.service";
+import AppError from "../../../errorHelpers/AppError";
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -9,6 +10,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
             name,
             email
         })  *///controller should not handle this business logic, move to service.ts
+        // throw new AppError(httpStatus.BAD_REQUEST, 'fake error')
 
         const user = await UserServices.createUser(req.body)
 
