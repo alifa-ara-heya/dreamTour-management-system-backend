@@ -42,7 +42,7 @@ const userSchema = new Schema<IUser>({
         default: false
     },
     isActive: {
-        type: Boolean,
+        type: String,
         enum: Object.values(IsActive),
         default: IsActive.ACTIVE
     },

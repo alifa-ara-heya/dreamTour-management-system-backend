@@ -1,14 +1,17 @@
 import { Request, Response } from "express";
-import { User } from "./user.model";
 import httpStatus from 'http-status-codes';
+import { UserServices } from "./user.service";
 
 const createUser = async (req: Request, res: Response) => {
     try {
-        const { name, email } = req.body;
+        /* const { name, email } = req.body;
         const user = await User.create({
             name,
             email
-        })
+        })  *///controller should not handle this business logic, move to service.ts
+
+        const user = await UserServices.createUser(req.body)
+
         res.status(httpStatus.CREATED).json({
             message: 'User created successfully!',
             user
@@ -25,3 +28,6 @@ const createUser = async (req: Request, res: Response) => {
 export const UserControllers = {
     createUser
 }
+
+// route matching -> controller -> service -> model -> db
+// 1st create model, then service, then use that function in controller, the use the controller in route
