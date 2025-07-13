@@ -1,34 +1,34 @@
 import { NextFunction, Request, Response } from "express"
-import { envVars } from "../app/config/env"
+import { envVars } from "../config/env"
 import AppError from "../errorHelpers/AppError"
 // import { ZodError } from 'zod';
 // import httpStatus from 'http-status-codes';
 
 export const globalErrorHandler = (
-    err: any,
-    req: Request,
-    res: Response,
-    next: NextFunction) => { // You must keep next in the parameter list for Express to recognize it as your global error handler, even if you don't use it.
-    let statusCode = 500
-    let message = `Something went wrong!`
+  err: any,
+  req: Request,
+  res: Response,
+  next: NextFunction) => { // You must keep next in the parameter list for Express to recognize it as your global error handler, even if you don't use it.
+  let statusCode = 500
+  let message = `Something went wrong!`
 
-    if (err instanceof AppError) {
-        statusCode = err.statusCode;
-        message = err.message
-    } else if (err instanceof Error) {
-        statusCode = 500;
-        message = err.message
-    }
+  if (err instanceof AppError) {
+    statusCode = err.statusCode;
+    message = err.message
+  } else if (err instanceof Error) {
+    statusCode = 500;
+    message = err.message
+  }
 
-    res.status(statusCode).json({
-        success: false,
-        message,
-        err,
-        stack:
-            envVars.NODE_ENV === 'development'
-                ? err.stack
-                : null //helps finding from which file the error is coming, but only for development, not for production
-    })
+  res.status(statusCode).json({
+    success: false,
+    message,
+    err,
+    stack:
+      envVars.NODE_ENV === 'development'
+        ? err.stack
+        : null //helps finding from which file the error is coming, but only for development, not for production
+  })
 }
 
 

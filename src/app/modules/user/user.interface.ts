@@ -13,7 +13,7 @@ auth providers
 */
 
 export interface IAuthProvider {
-    provider: string; //Google, credential = email+password
+    provider: "google" | "credentials"; //Google, credential = email+password
     providerId: string;
 }
 
