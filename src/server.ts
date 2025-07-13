@@ -9,13 +9,9 @@ let server: Server;
 
 const startServer = async () => {
     try {
-<<<<<<< HEAD
         // console.log(envvars.PORT);
         console.log(`Attempting to connect to DB`);
-        await mongoose.connect(envvars.DB_URL)
-=======
         await mongoose.connect(envVars.DB_URL)
->>>>>>> part-1
 
         console.log('Connected to MongoDB');
 
