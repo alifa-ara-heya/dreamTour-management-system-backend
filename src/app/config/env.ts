@@ -6,11 +6,14 @@ interface EnvConfig {
     PORT: string,
     DB_URL: string,
     NODE_ENV: 'development' | 'production',
-    GEMINI_API_KEY: string
+    GEMINI_API_KEY: string,
+    BCRYPT_SALT_ROUND: string,
+    JWT_ACCESS_SECRET: string
+    JWT_ACCESS_EXPIRES: string
 }
 
 const loadEnvVariables = (): EnvConfig => {
-    const requiredVariables: string[] = ["PORT", "DB_URL", "NODE_ENV", "GEMINI_API_KEY"];
+    const requiredVariables: string[] = ["PORT", "DB_URL", "NODE_ENV", "GEMINI_API_KEY", "BCRYPT_SALT_ROUND", "JWT_ACCESS_SECRET", "JWT_ACCESS_EXPIRES"];
 
     requiredVariables.forEach(key => {
         if (!process.env[key]) {
@@ -23,7 +26,10 @@ const loadEnvVariables = (): EnvConfig => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         DB_URL: process.env.DB_URL!,
         NODE_ENV: process.env.NODE_ENV as "development" | "production",
-        GEMINI_API_KEY: process.env.GEMINI_API_KEY as string
+        GEMINI_API_KEY: process.env.GEMINI_API_KEY as string,
+        BCRYPT_SALT_ROUND: process.env.BCRYPT_SALT_ROUND as string,
+        JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET as string,
+        JWT_ACCESS_EXPIRES: process.env.JWT_ACCESS_EXPIRES as string
     }
 }
 
