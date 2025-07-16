@@ -1,7 +1,7 @@
 // import  jwt,{ JwtPayload } from 'jsonwebtoken';
 import { /* NextFunction, Request, Response, */ Router } from "express";
 import { UserControllers } from "./user.controller";
-import { createUserZodSchema } from "./user.validation";
+import { createUserZodSchema, updateUserZodSchema } from "./user.validation";
 import { validateRequest } from "../../middlewares/validateRequest";
 // import AppError from '../../errorHelpers/appError';
 // import { Role } from './user.interface';
@@ -84,5 +84,13 @@ router.post("/register",
     UserControllers.createUser)
 
 router.get('/all-users', checkAuth(Role.ADMIN, Role.SUPER_ADMIN), UserControllers.getAllUsers)
+
+
+//update route- api/v1/user/:id
+router.patch("/:id", validateRequest(updateUserZodSchema), checkAuth(...Object.values(Role)), UserControllers.updateUser)
+
+// Object.values(Role): This JavaScript method returns an array of the values from the Role enum: ["SUPER_ADMIN", "ADMIN", "USER", "GUIDE"]
+
+// ...Object.values(Role): The spread syntax (...) expands this array into individual arguments. So, the checkAuth function is called like this: checkAuth("SUPER_ADMIN", "ADMIN", "USER", "GUIDE").
 
 export const userRoutes = router;

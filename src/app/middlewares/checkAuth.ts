@@ -50,6 +50,8 @@ export const checkAuth = (...authRoles: string[]) => async (req: Request, re: Re
             throw new AppError(403, "You are not permitted to view this route!")
         }
 
+        req.user = verifiedToken //we declared a global type for it in app> interface> index.d.ts
+
 
         //now no user with the role "User" can access this route with his token.
         next();
