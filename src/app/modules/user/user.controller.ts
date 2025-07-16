@@ -86,7 +86,7 @@ const getAllUsers = catchAsync(async (req: Request, res: Response, _next: NextFu
     }) */
     sendResponse(res, {
         success: true,
-        statusCode: httpStatus.CREATED,
+        statusCode: httpStatus.OK,
         message: "All Users retrieved successfully",
         data: result.data,
         meta: result.meta
@@ -112,7 +112,7 @@ const updateUser = catchAsync(async (req: Request, res: Response, next: NextFunc
      }) */
     sendResponse(res, {
         success: true,
-        statusCode: httpStatus.CREATED,
+        statusCode: httpStatus.OK,
         message: "User updated successfully",
         data: user
     })

@@ -5,7 +5,7 @@ import { envVars } from "../config/env";
 import { JwtPayload } from "jsonwebtoken";
 
 
-export const checkAuth = (...authRoles: string[]) => async (req: Request, re: Response, next: NextFunction) => {
+export const checkAuth = (...authRoles: string[]) => async (req: Request, res: Response, next: NextFunction) => {
     try {
         const accessToken = req.headers.authorization;
 
