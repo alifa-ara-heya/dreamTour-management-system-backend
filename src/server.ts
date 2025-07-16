@@ -4,6 +4,7 @@ import { Server } from "http";
 import mongoose from 'mongoose';
 import app from "./app";
 import { envVars } from "./app/config/env";
+import { superAdmin } from "./app/utils/seedSuperAdmin";
 
 let server: Server;
 
@@ -23,7 +24,15 @@ const startServer = async () => {
     }
 }
 
-startServer();
+/* startServer();
+superAdmin(); */
+
+// but we need to run these functions one by one after starting the server, that's why we will use IIFE inside async
+
+(async () => {
+    await startServer()
+    await superAdmin() //to create a superAdmin, if it doesn't exist
+})();
 
 // unhandled rejection error
 process.on("unhandledRejection", (err) => {
