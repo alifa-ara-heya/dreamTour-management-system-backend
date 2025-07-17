@@ -7,6 +7,8 @@ import bcryptjs from 'bcryptjs'
 // import { generateToken } from "../../utils/jwt";
 // import { envVars } from "../../config/env";
 import { createNewAccessTokenWithRefreshToken, createUserTokens } from "../../utils/userTokens";
+import { JwtPayload } from "jsonwebtoken";
+import { envVars } from "../../config/env";
 // import { generateToken, verifyToken } from "../../utils/jwt";
 // import { envVars } from "../../config/env";
 // import { JwtPayload } from "jsonwebtoken";
@@ -88,9 +90,32 @@ const getNewAccessToken = async (refreshToken: string) => {
 
 }
 
-// user - login - token (email, role, _id) - booking / payment / booking / payment cancel - token 
+// user - login - token (email, role, _id) - booking / payment / booking / payment cancel - token
+
+const resetPassword = async (oldPassword: string, newPassword: string, decodedToken: JwtPayload) => {
+
+    const user = await User.findById(decodedToken.userId)
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const isOldPasswordMatch = await bcryptjs.compare(oldPassword, user!.password as string)
+
+    if (!isOldPasswordMatch) {
+        throw new AppError(httpStatus.UNAUTHORIZED, 'Old Password does not match')
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    user!.password = await bcryptjs.hash(newPassword, Number(envVars.BCRYPT_SALT_ROUND))
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    await user!.save();
+    // return true // Without returning true, the calling function or client might incorrectly assume that the password reset was unsuccessful.
+
+}
+
+
 
 export const AuthServices = {
     credentialsLogin,
-    getNewAccessToken
+    getNewAccessToken,
+    resetPassword
 }
