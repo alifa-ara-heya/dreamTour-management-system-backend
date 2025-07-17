@@ -80,7 +80,7 @@ const getNewAccessToken = async (refreshToken: string) => {
 
     const accessToken = generateToken(jwtPayload, envVars.JWT_ACCESS_SECRET, envVars.JWT_ACCESS_EXPIRES) */
 
-    const newAccessToken = createNewAccessTokenWithRefreshToken(refreshToken)
+    const newAccessToken = await createNewAccessTokenWithRefreshToken(refreshToken)
 
     return {
         accessToken: newAccessToken

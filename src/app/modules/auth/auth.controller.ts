@@ -43,10 +43,12 @@ const getNewAccessToken = catchAsync(async (req: Request, res: Response, next: N
     }
     const tokenInfo = await AuthServices.getNewAccessToken(refreshToken as string)
 
-    res.cookie("accessToken", tokenInfo.accessToken, {
-        httpOnly: true,
-        secure: false
-    })
+    // res.cookie("accessToken", tokenInfo.accessToken, {
+    //     httpOnly: true,
+    //     secure: false
+    // })
+
+    setAuthCookie(res, tokenInfo)
 
 
     sendResponse(res, {
