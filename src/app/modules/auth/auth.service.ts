@@ -1,15 +1,15 @@
 import AppError from "../../errorHelpers/appError"
 import httpStatus from 'http-status-codes';
-import { IsActive, IUser } from "../user/user.interface"
+import { /* IsActive,  */ IUser } from "../user/user.interface"
 import { User } from "../user/user.model"
 import bcryptjs from 'bcryptjs'
 // import jwt from 'jsonwebtoken'
 // import { generateToken } from "../../utils/jwt";
 // import { envVars } from "../../config/env";
-import { createUserTokens } from "../../utils/userTokens";
-import { generateToken, verifyToken } from "../../utils/jwt";
-import { envVars } from "../../config/env";
-import { JwtPayload } from "jsonwebtoken";
+import { createNewAccessTokenWithRefreshToken, createUserTokens } from "../../utils/userTokens";
+// import { generateToken, verifyToken } from "../../utils/jwt";
+// import { envVars } from "../../config/env";
+// import { JwtPayload } from "jsonwebtoken";
 
 const credentialsLogin = async (payload: Partial<IUser>) => {
     const { email, password } = payload
@@ -55,7 +55,7 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
 
 }
 const getNewAccessToken = async (refreshToken: string) => {
-    const verifiedRefreshToken = verifyToken(refreshToken, envVars.JWT_REFRESH_SECRET) as JwtPayload;
+    /* const verifiedRefreshToken = verifyToken(refreshToken, envVars.JWT_REFRESH_SECRET) as JwtPayload;
 
     const isUserExist = await User.findOne({ email: verifiedRefreshToken.email })
     console.log('isUserExist', isUserExist);
@@ -78,10 +78,12 @@ const getNewAccessToken = async (refreshToken: string) => {
         role: isUserExist.role
     }
 
-    const accessToken = generateToken(jwtPayload, envVars.JWT_ACCESS_SECRET, envVars.JWT_ACCESS_EXPIRES)
+    const accessToken = generateToken(jwtPayload, envVars.JWT_ACCESS_SECRET, envVars.JWT_ACCESS_EXPIRES) */
+
+    const newAccessToken = createNewAccessTokenWithRefreshToken(refreshToken)
 
     return {
-        accessToken
+        accessToken: newAccessToken
     }
 
 }
