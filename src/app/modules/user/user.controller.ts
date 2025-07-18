@@ -3,9 +3,9 @@ import httpStatus from 'http-status-codes';
 import { UserServices } from "./user.service";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
-import { verifyToken } from "../../utils/jwt";
-import { envVars } from "../../config/env";
-import { JwtPayload } from "jsonwebtoken";
+// import { verifyToken } from "../../utils/jwt";
+// import { envVars } from "../../config/env";
+// import { JwtPayload } from "jsonwebtoken";
 // import AppError from "../../../errorHelpers/AppError";
 
 /* type AsyncHandler = (req: Request, res: Response, next: NextFunction) => Promise<void>
@@ -86,7 +86,7 @@ const getAllUsers = catchAsync(async (req: Request, res: Response, _next: NextFu
     }) */
     sendResponse(res, {
         success: true,
-        statusCode: httpStatus.CREATED,
+        statusCode: httpStatus.OK,
         message: "All Users retrieved successfully",
         data: result.data,
         meta: result.meta
@@ -112,7 +112,7 @@ const updateUser = catchAsync(async (req: Request, res: Response, next: NextFunc
      }) */
     sendResponse(res, {
         success: true,
-        statusCode: httpStatus.CREATED,
+        statusCode: httpStatus.OK,
         message: "User updated successfully",
         data: user
     })

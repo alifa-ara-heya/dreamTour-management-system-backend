@@ -8,7 +8,7 @@ import { User } from "../modules/user/user.model";
 import { IsActive } from '../modules/user/user.interface';
 
 
-export const checkAuth = (...authRoles: string[]) => async (req: Request, re: Response, next: NextFunction) => {
+export const checkAuth = (...authRoles: string[]) => async (req: Request, res: Response, next: NextFunction) => {
     try {
         const accessToken = req.headers.authorization;
 
