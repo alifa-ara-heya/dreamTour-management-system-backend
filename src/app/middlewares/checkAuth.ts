@@ -1,8 +1,11 @@
+import httpStatus from 'http-status-codes';
 import AppError from "../errorHelpers/appError";
 import { NextFunction, Request, Response } from "express";
 import { verifyToken } from "../utils/jwt";
 import { envVars } from "../config/env";
 import { JwtPayload } from "jsonwebtoken";
+import { User } from "../modules/user/user.model";
+import { IsActive } from '../modules/user/user.interface';
 
 
 export const checkAuth = (...authRoles: string[]) => async (req: Request, res: Response, next: NextFunction) => {
@@ -32,6 +35,22 @@ export const checkAuth = (...authRoles: string[]) => async (req: Request, res: R
         // now go to the postman, edit you headers to add authorization, add the token value you got logging a user and try to get all the users. With this right token you will get all users. But if you try to edit the token and make an error willingly, you will get JsonWebTokenError
 
         const verifiedToken = verifyToken(accessToken, envVars.JWT_ACCESS_SECRET) as JwtPayload
+
+        const isUserExist = await User.findOne({ email: verifiedToken.email })
+        console.log('isUserExist', isUserExist);
+
+        if (!isUserExist) {
+            throw new AppError(httpStatus.BAD_REQUEST, "User doesn't exist")
+        }
+
+        if (isUserExist.isActive === IsActive.BLOCKED || isUserExist.isActive === IsActive.INACTIVE) {
+            throw new AppError(httpStatus.BAD_REQUEST, `User is ${isUserExist.isActive}`)
+        }
+
+        if (isUserExist.isDeleted) {
+            throw new AppError(httpStatus.BAD_REQUEST, "User is deleted")
+        }
+
 
 
         /*   if ((verifiedToken as JwtPayload).role !== Role.ADMIN && Role.SUPER_ADMIN) {

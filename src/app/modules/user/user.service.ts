@@ -71,6 +71,18 @@ const updateUsers = async (userId: string, payload: Partial<IUser>, decodedToken
     console.log('userId', userId);
     console.log('decodedId', decodedToken.userId);
 
+    // Security check: A regular user or guide can only update their own profile
+    // const isUserOrGuide = decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE;
+    // const isUpdatingSelf = decodedToken.userId === userId;
+
+    // if (isUserOrGuide && !isUpdatingSelf) {
+    //     throw new AppError(httpStatus.FORBIDDEN, "You are not authorized to update another user's profile.")
+    // }
+
+    // // prevent email updates as it's a unique identifier
+    // if (payload.email) {
+    //     throw new AppError(httpStatus.BAD_REQUEST, "Updating email address is not allowed.");
+    // }
 
     // Check if the role is being updated and if the requester has the necessary permissions - this block is only triggered if the request includes an attempt to update the user's role (
     if (payload.role) {
