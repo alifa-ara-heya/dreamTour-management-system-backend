@@ -8,11 +8,41 @@ import { setAuthCookie } from '../../utils/setCookie';
 import { createUserTokens } from '../../utils/userTokens';
 import { envVars } from '../../config/env';
 import { JwtPayload } from 'jsonwebtoken';
+import passport from 'passport';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const credentialsLogin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-    const loginInfo = await AuthServices.credentialsLogin(req.body)
+    // const loginInfo = await AuthServices.credentialsLogin(req.body)
+    // instead of our AuthService to login with email, password, we will use passport now.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    passport.authenticate("local", async (err: any, user: any, info: any) => {
+
+        if (err) {
+            // return next(err)
+            return new AppError(401, err)
+        }
+
+        if (!user) {
+            return new AppError(401, info.message)
+        }
+
+        const userTokens = await createUserTokens(user)
+
+        delete user.toObject().password
+
+        setAuthCookie(res, userTokens)
+
+        sendResponse(res, {
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "User logged in successfully",
+            data: {
+                accessToken: userTokens.accessToken,
+                refreshToken: userTokens.refreshToken,
+                user
+            }
+        })
+    })(req, res, next)
 
     /*   res.cookie("accessToken", loginInfo.accessToken, {
           httpOnly: true, //ensures that these cookies cannot be accessed via client-side JavaScript, which helps protect them from cross-site scripting (XSS) attacks.
@@ -25,7 +55,7 @@ const credentialsLogin = catchAsync(async (req: Request, res: Response, next: Ne
             secure: false
         }) */
 
-    setAuthCookie(res, loginInfo)
+    /* setAuthCookie(res, loginInfo)
 
 
     sendResponse(res, {
@@ -33,7 +63,7 @@ const credentialsLogin = catchAsync(async (req: Request, res: Response, next: Ne
         statusCode: httpStatus.OK,
         message: "User logged in successfully",
         data: loginInfo
-    })
+    }) */
 })
 
 // get new access token

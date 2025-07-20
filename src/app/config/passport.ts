@@ -19,6 +19,10 @@ passport.use(
             if (!isUserExist) {
                 return done(null, false, { message: "User Does Not Exist!" })
             }
+            /* 
+                if (!isUserExist) {
+                    return done("User does not exist")
+                } */
 
             const isGoogleAuthenticated = isUserExist.auths.some(providerObjects => providerObjects.provider === 'google')
 
