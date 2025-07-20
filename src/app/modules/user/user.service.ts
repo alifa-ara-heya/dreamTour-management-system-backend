@@ -1,10 +1,10 @@
 import httpStatus from 'http-status-codes';
 import { IAuthProvider, IUser, Role } from "./user.interface";
 import { User } from "./user.model";
-import AppError from '../../errorHelpers/appError';
 import bcryptjs from 'bcryptjs'
 import { envVars } from '../../config/env';
 import { JwtPayload } from 'jsonwebtoken';
+import AppError from '../../errorHelpers/AppError';
 
 const createUser = async (payload: Partial<IUser>) => {
     /*  const { name, email } = payload;

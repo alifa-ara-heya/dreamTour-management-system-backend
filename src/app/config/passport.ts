@@ -16,17 +16,17 @@ passport.use(
             const isUserExist = await User.findOne({ email })
             console.log('isUserExist', isUserExist);
 
-            if (!isUserExist) {
+            /* if (!isUserExist) {
                 return done(null, false, { message: "User Does Not Exist!" })
+            } */
+            // or- both are okay
+            if (!isUserExist) {
+                return done("User does not exist")
             }
-            /* 
-                if (!isUserExist) {
-                    return done("User does not exist")
-                } */
 
             const isGoogleAuthenticated = isUserExist.auths.some(providerObjects => providerObjects.provider === 'google')
 
-            if (isGoogleAuthenticated) {
+            if (!isGoogleAuthenticated && !isUserExist.password) {
                 return done(null, false, { message: "You are authenticated through Google Login. If you want to login with credentials, first login with Google and then set a password for your Gmail. After that, you can login with password." })
             }
 

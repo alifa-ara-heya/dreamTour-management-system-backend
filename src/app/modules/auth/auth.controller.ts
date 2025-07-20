@@ -3,7 +3,7 @@ import { catchAsync } from "../../utils/catchAsync"
 import { sendResponse } from "../../utils/sendResponse"
 import { NextFunction, Request, Response } from 'express';
 import { AuthServices } from './auth.service';
-import AppError from '../../errorHelpers/appError';
+import AppError from '../../errorHelpers/AppError';
 import { setAuthCookie } from '../../utils/setCookie';
 import { createUserTokens } from '../../utils/userTokens';
 import { envVars } from '../../config/env';
@@ -19,11 +19,14 @@ const credentialsLogin = catchAsync(async (req: Request, res: Response, next: Ne
 
         if (err) {
             // return next(err)
-            return new AppError(401, err)
+            return next(new AppError(401, err))
+            // return new AppError(401, err) - not right
         }
 
         if (!user) {
-            return new AppError(401, info.message)
+            // return new AppError(401, info.message) - not right
+            return next(new AppError(401, info.message))
+
         }
 
         const userTokens = await createUserTokens(user)

@@ -1,4 +1,4 @@
-import AppError from "../../errorHelpers/appError"
+import AppError from "../../errorHelpers/AppError"
 import httpStatus from 'http-status-codes';
 import { /* IsActive,  */ IUser } from "../user/user.interface"
 import { User } from "../user/user.model"
