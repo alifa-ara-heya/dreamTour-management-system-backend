@@ -3,7 +3,7 @@ import { envVars } from "../config/env"
 import AppError from "../errorHelpers/AppError"
 import { TErrorSources } from "../interfaces/error.types";
 import { handlerDuplicateError } from "../errorHelpers/handleDuplicateError";
-import { handleCastError } from "../errorHelpers/handleCasterror";
+import { handleCastError } from "../errorHelpers/handleCastError";
 import { handlerZodError } from "../errorHelpers/handleZodError";
 import { handlerValidationError } from "../errorHelpers/handleValidationError";
 // import { ZodError } from 'zod';
