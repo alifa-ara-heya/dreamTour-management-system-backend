@@ -73,7 +73,7 @@ Handling errors effectively is key to building a stable application.
 - **Async Wrapper (`utils/catchAsync.ts`)**
   A higher-order function that wraps async controllers and automatically forwards errors to `next()`. This eliminates repetitive `try...catch` blocks.
 
-- **Custom Error Class (`errorHelpers/appError.ts`)**
+- **Custom Error Class (`errorHelpers/AppError.ts`)**
   Extends the built-in `Error` class to support custom status codes. Helpful for throwing HTTP-aware errors like `new AppError(404, "User not found")`.
 
 - **Global Error Handler (`middlewares/globalErrorHandler.ts`)**

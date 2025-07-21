@@ -1,5 +1,5 @@
 import httpStatus from 'http-status-codes';
-import AppError from "../errorHelpers/appError";
+import AppError from "../errorHelpers/AppError";
 import { NextFunction, Request, Response } from "express";
 import { verifyToken } from "../utils/jwt";
 import { envVars } from "../config/env";
