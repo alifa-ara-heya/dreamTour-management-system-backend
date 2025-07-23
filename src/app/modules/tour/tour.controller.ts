@@ -1,3 +1,4 @@
+//Controllers handle HTTP, services handle business logic, and models handle database interaction.
 
 import { Request, Response } from 'express';
 import { catchAsync } from '../../utils/catchAsync';
@@ -15,9 +16,10 @@ const createTour = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllTours = catchAsync(async (req: Request, res: Response) => {
-
+    //It doesn't know how the tours are fetched; it just delegates the task to tourService. 
     const query = req.query
     const result = await TourService.getAllTours(query as Record<string, string>);
+    // Record<Keys, Type> is a built-in utility type in TypeScript. It's a shorthand way to define an object type where you know the type of the keys and the type of the values, but you don't know the exact property names in advance.
     sendResponse(res, {
         statusCode: 200,
         success: true,

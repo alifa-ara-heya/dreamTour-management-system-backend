@@ -97,7 +97,7 @@ const createTour = async (payload: ITour) => {
 // };
 
 const getAllTours = async (query: Record<string, string>) => {
-
+    //contains the core business logic. It returns the final data and metadata back to the controller. It knows nothing about HTTP requests or responses.
 
     const queryBuilder = new QueryBuilder(Tour.find(), query)
 
