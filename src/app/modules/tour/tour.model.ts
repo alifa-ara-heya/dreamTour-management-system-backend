@@ -11,13 +11,15 @@ export const TourType = model<ITourType>("TourType", tourTypeSchema)
 
 const tourSchema = new Schema<ITour>({
     title: { type: String, required: true },
-    slug: { type: String, required: true, unique: true },
+    slug: { type: String, unique: true },
     description: { type: String },
     images: { type: [String], default: [] },
     location: { type: String },
     costFrom: { type: Number },
     startDate: { type: Date },
     endDate: { type: Date },
+    departureLocation: { type: String },
+    arrivalLocation: { type: String },
     included: { type: [String], default: [] },
     excluded: { type: [String], default: [] },
     amenities: { type: [String], default: [] },
@@ -38,31 +40,26 @@ const tourSchema = new Schema<ITour>({
     timestamps: true
 })
 
+tourSchema.pre("save", async function (next) {
 
-tourSchema.pre("save", async function (next) //document middleware 
-{
-
-    if (this.isModified("title")) { //checks if the title field has been changed. This is an efficient way to ensure the slug is only regenerated when the title changes, not on every save.
+    if (this.isModified("title")) {
         const baseSlug = this.title.toLowerCase().split(" ").join("-")
         let slug = `${baseSlug}`
 
         let counter = 0;
-        while (await Tour.exists({ slug })) //to check if a document with the generated slug already exists in the database. 
-        {
-            slug = `${slug}-${counter++}` // If a duplicate is found, it appends a counter to the slug (e.g., dhaka-division-0, my-awesome-tour-1) and checks again until a unique slug is found.
+        while (await Tour.exists({ slug })) {
+            slug = `${slug}-${counter++}` // dhaka-division-2
         }
 
-        this.slug = slug; //assigns the final, unique slug to the document's slug property before it's saved.
+        this.slug = slug;
     }
     next()
 })
 
-tourSchema.pre("findOneAndUpdate", async function (next) //query middleware
-{
-    const tour = this.getUpdate() as Partial<ITour> //retrieves the update object from the query.
+tourSchema.pre("findOneAndUpdate", async function (next) {
+    const tour = this.getUpdate() as Partial<ITour>
 
-    if (tour.title)  //checks if the title is being updated.
-    {
+    if (tour.title) {
         const baseSlug = tour.title.toLowerCase().split(" ").join("-")
         let slug = `${baseSlug}`
 
@@ -75,10 +72,9 @@ tourSchema.pre("findOneAndUpdate", async function (next) //query middleware
         tour.slug = slug
     }
 
-    this.setUpdate(tour) //applies the modified update object back to the query, ensuring the new slug is included in the database operation.
+    this.setUpdate(tour)
 
     next()
 })
-
 
 export const Tour = model<ITour>("Tour", tourSchema)
