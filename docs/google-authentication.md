@@ -1,7 +1,3 @@
-Of course. Here is the provided information reformatted into a clear, step-by-step Markdown guide with a more formal, passive voice.
-
----
-
 # Google Authentication Setup: A Step-by-Step Guide
 
 This guide outlines the process of implementing a "Login with Google" feature in a Node.js/Express application using Passport.js.
