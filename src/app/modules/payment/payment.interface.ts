@@ -13,7 +13,7 @@ export interface IPayment {
     transactionId: string;
     amount: number;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    paymentGateway?: any;
+    paymentGatewayData?: any;
     invoiceURL?: string;
     status: PAYMENT_STATUS
 }

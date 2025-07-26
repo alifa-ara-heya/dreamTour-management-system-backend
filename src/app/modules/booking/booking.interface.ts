@@ -8,7 +8,7 @@ export enum BOOKING_STATUS {
 }
 
 export interface IBooking {
-    user: Types.ObjectId,
+    user: Types.ObjectId, //Types.ObjectId is for TypeScript's type definition. The user property will be an instance of Mongoose's ObjectId class
     tour: Types.ObjectId,
     payment?: Types.ObjectId,
     guestCount: number,
