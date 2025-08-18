@@ -18,15 +18,12 @@ const credentialsLogin = catchAsync(async (req: Request, res: Response, next: Ne
     passport.authenticate("local", async (err: any, user: any, info: any) => {
 
         if (err) {
-            // return next(err)
-            return next(new AppError(401, err))
-            // return new AppError(401, err) - not right
+            // If the passport strategy returns an error (e.g., from the service), pass it to the global error handler.
+            return next(err);
         }
 
         if (!user) {
-            // return new AppError(401, info.message) - not right
-            return next(new AppError(401, info.message))
-
+            return next(new AppError(httpStatus.UNAUTHORIZED, info.message));
         }
 
         const userTokens = await createUserTokens(user)
