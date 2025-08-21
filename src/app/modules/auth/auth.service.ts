@@ -17,7 +17,7 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
     const { email, password } = payload
     // It's good practice to explicitly select the password field if it is set to `select: false` in your User schema.
     const isUserExist = await User.findOne({ email }).select('+password')
-    console.log('isUserExist', isUserExist);
+    // console.log('isUserExist', isUserExist);
 
     if (!isUserExist) {
         // Using a generic error message for non-existent user to prevent user enumeration attacks.
