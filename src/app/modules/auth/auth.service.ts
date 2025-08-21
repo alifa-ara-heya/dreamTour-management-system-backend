@@ -15,17 +15,19 @@ import { envVars } from "../../config/env";
 
 const credentialsLogin = async (payload: Partial<IUser>) => {
     const { email, password } = payload
-    const isUserExist = await User.findOne({ email })
-    console.log('isUserExist', isUserExist);
+    // It's good practice to explicitly select the password field if it is set to `select: false` in your User schema.
+    const isUserExist = await User.findOne({ email }).select('+password')
+    // console.log('isUserExist', isUserExist);
 
     if (!isUserExist) {
-        throw new AppError(httpStatus.BAD_REQUEST, "Email doesn't exist")
+        // Using a generic error message for non-existent user to prevent user enumeration attacks.
+        throw new AppError(httpStatus.UNAUTHORIZED, "Incorrect email or password")
     }
 
     const isPassWordMatch = await bcryptjs.compare(password as string, isUserExist.password as string)
 
     if (!isPassWordMatch) {
-        throw new AppError(httpStatus.BAD_REQUEST, "Incorrect Password")
+        throw new AppError(httpStatus.UNAUTHORIZED, "Incorrect email or password")
     }
 
     // const jwtPayload = {
