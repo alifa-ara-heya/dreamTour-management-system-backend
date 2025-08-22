@@ -1,12 +1,11 @@
 
+import { deleteImageFromCLoudinary } from "../../config/cloudinary.config";
 import { QueryBuilder } from "../../utils/QueryBuilder";
-import { Division } from "../division/division.model";
-import { tourSearchableFields } from "./tour.constant";
-import { ITour, ITourCreationPayload, ITourType } from "./tour.interface";
+import { tourSearchableFields, tourTypeSearchableFields } from "./tour.constant";
+import { ITour, ITourType } from "./tour.interface";
 import { Tour, TourType } from "./tour.model";
 
-const createTour = async (payload: ITourCreationPayload) => {
-    // ... (check for existing tour title)
+const createTour = async (payload: ITour) => {
     const existingTour = await Tour.findOne({ title: payload.title });
     if (existingTour) {
         throw new Error("A tour with this title already exists.");
@@ -22,31 +21,7 @@ const createTour = async (payload: ITourCreationPayload) => {
 
     // payload.slug = slug;
 
-    // STEP 1: Find the Division by its name OR slug
-    const division = await Division.findOne({
-        $or: [{ slug: payload.division }, { name: payload.division }]
-    });
-
-    // STEP 2: Handle cases where the division isn't found
-    if (!division) {
-        throw new Error(`Division with name or slug '${payload.division}' not found.`);
-    }
-
-    // STEP 3: Find the Tour Type by its name
-    const tourType = await TourType.findOne({ name: payload.tourType as string });
-    if (!tourType) {
-        throw new Error(`TourType with name '${payload.tourType}' not found.`);
-    }
-
-    // STEP 4: Prepare the final data for database insertion
-    const tourData: Omit<ITour, 'slug'> = {
-        ...payload, // Copy all original data from the request
-        division: division._id, // OVERWRITE division with the found ObjectId
-        tourType: tourType._id  // OVERWRITE tourType with the found ObjectId
-    };
-
-    // STEP 5: Create the tour with the correct IDs
-    const tour = await Tour.create(tourData)
+    const tour = await Tour.create(payload)
 
     return tour;
 };
@@ -123,7 +98,7 @@ const createTour = async (payload: ITourCreationPayload) => {
 // };
 
 const getAllTours = async (query: Record<string, string>) => {
-    //contains the core business logic. It returns the final data and metadata back to the controller. It knows nothing about HTTP requests or responses.
+
 
     const queryBuilder = new QueryBuilder(Tour.find(), query)
 
@@ -147,9 +122,13 @@ const getAllTours = async (query: Record<string, string>) => {
         meta
     }
 };
-
-
-const updateTour = async (id: string, payload: Partial<ITourCreationPayload>) => {
+const getSingleTour = async (slug: string) => {
+    const tour = await Tour.findOne({ slug });
+    return {
+        data: tour,
+    }
+};
+const updateTour = async (id: string, payload: Partial<ITour>) => {
 
     const existingTour = await Tour.findById(id);
 
@@ -157,51 +136,46 @@ const updateTour = async (id: string, payload: Partial<ITourCreationPayload>) =>
         throw new Error("Tour not found.");
     }
 
-    // Separate the fields that need conversion (division, tourType) from the rest.
-    const { division: divisionIdentifier, tourType: tourTypeIdentifier, ...restOfPayload } = payload;
+    // if (payload.title) {
+    //     const baseSlug = payload.title.toLowerCase().split(" ").join("-")
+    //     let slug = `${baseSlug}`
 
+    //     let counter = 0;
+    //     while (await Tour.exists({ slug })) {
+    //         slug = `${slug}-${counter++}` // dhaka-division-2
+    //     }
 
-    // Create a mutable object for the update payload
-    const updateData: Partial<ITour> = { ...restOfPayload };
+    //     payload.slug = slug
+    // }
 
-    // If division is being updated, find its ObjectId
-    if (divisionIdentifier) {
-        const division = await Division.findOne({
-            $or: [
-                { slug: divisionIdentifier },
-                { name: divisionIdentifier }
-            ]
-        });
-        if (!division) {
-            throw new Error(`Division with name or slug '${divisionIdentifier}' not found.`);
-        }
-        updateData.division = division._id;
+    if (payload.images && payload.images.length > 0 && existingTour.images && existingTour.images.length > 0) {
+        payload.images = [...payload.images, ...existingTour.images]
     }
 
-    // If tourType is being updated, find its ObjectId
-    if (tourTypeIdentifier) {
-        const tourType = await TourType.findOne({ name: tourTypeIdentifier })
+    if (payload.deleteImages && payload.deleteImages.length > 0 && existingTour.images && existingTour.images.length > 0) {
 
-        if (!tourType) {
-            throw new Error(`TourType with name ${tourTypeIdentifier} not found.`);
-        }
+        const restDBImages = existingTour.images.filter(imageUrl => !payload.deleteImages?.includes(imageUrl))
 
-        updateData.tourType = tourType._id
+        const updatedPayloadImages = (payload.images || [])
+            .filter(imageUrl => !payload.deleteImages?.includes(imageUrl))
+            .filter(imageUrl => !restDBImages.includes(imageUrl))
+
+        payload.images = [...restDBImages, ...updatedPayloadImages]
+
+
     }
 
-    const updatedTour = await Tour.findByIdAndUpdate(id, updateData, { new: true });
+    const updatedTour = await Tour.findByIdAndUpdate(id, payload, { new: true });
+
+    if (payload.deleteImages && payload.deleteImages.length > 0 && existingTour.images && existingTour.images.length > 0) {
+        await Promise.all(payload.deleteImages.map(url => deleteImageFromCLoudinary(url)))
+    }
 
     return updatedTour;
 };
-
 const deleteTour = async (id: string) => {
-    const result = await Tour.findByIdAndDelete(id);
-    if (!result) {
-        throw new Error("Tour not found.");
-    }
-    return result;
+    return await Tour.findByIdAndDelete(id);
 };
-
 const createTourType = async (payload: ITourType) => {
     const existingTourType = await TourType.findOne({ name: payload.name });
 
@@ -209,10 +183,33 @@ const createTourType = async (payload: ITourType) => {
         throw new Error("Tour type already exists.");
     }
 
-    return await TourType.create(payload);
+    return await TourType.create({ name });
 };
-const getAllTourTypes = async () => {
-    return await TourType.find();
+const getAllTourTypes = async (query: Record<string, string>) => {
+    const queryBuilder = new QueryBuilder(TourType.find(), query)
+
+    const tourTypes = await queryBuilder
+        .search(tourTypeSearchableFields)
+        .filter()
+        .sort()
+        .fields()
+        .paginate()
+
+    const [data, meta] = await Promise.all([
+        tourTypes.build(),
+        queryBuilder.getMeta()
+    ])
+
+    return {
+        data,
+        meta
+    }
+};
+const getSingleTourType = async (id: string) => {
+    const tourType = await TourType.findById(id);
+    return {
+        data: tourType
+    };
 };
 const updateTourType = async (id: string, payload: ITourType) => {
     const existingTourType = await TourType.findById(id);
@@ -224,12 +221,12 @@ const updateTourType = async (id: string, payload: ITourType) => {
     return updatedTourType;
 };
 const deleteTourType = async (id: string) => {
-    const result = await TourType.findByIdAndDelete(id);
-    if (!result) {
+    const existingTourType = await TourType.findById(id);
+    if (!existingTourType) {
         throw new Error("Tour type not found.");
     }
 
-    return result;
+    return await TourType.findByIdAndDelete(id);
 };
 
 export const TourService = {
@@ -238,6 +235,8 @@ export const TourService = {
     deleteTourType,
     updateTourType,
     getAllTourTypes,
+    getSingleTourType,
+    getSingleTour,
     getAllTours,
     updateTour,
     deleteTour,

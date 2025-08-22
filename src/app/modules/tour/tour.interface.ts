@@ -22,9 +22,5 @@ export interface ITour {
     minAge?: number;
     division: Types.ObjectId
     tourType: Types.ObjectId
-}
-
-export type ITourCreationPayload = Omit<ITour, 'division' | 'tourType' | 'slug'> & {
-    division: string,
-    tourType: string
+    deleteImages?: string[]
 }
