@@ -20,7 +20,7 @@ const credentialsLogin = catchAsync(async (req: Request, res: Response, next: Ne
 
         if (err) {
             // If the passport strategy returns an error (e.g., from the service), pass it to the global error handler.
-            return next(err);
+            return next(new AppError(httpStatus.BAD_REQUEST, err));
         }
 
         if (!user) {
