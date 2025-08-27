@@ -51,6 +51,10 @@ export const checkAuth = (...authRoles: string[]) => async (req: Request, res: R
             throw new AppError(httpStatus.BAD_REQUEST, "User is deleted")
         }
 
+        if (!isUserExist.isVerified) {
+            throw new AppError(httpStatus.BAD_REQUEST, "User is not verified.")
+        }
+
 
 
         /*   if ((verifiedToken as JwtPayload).role !== Role.ADMIN && Role.SUPER_ADMIN) {

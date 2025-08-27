@@ -1,12 +1,16 @@
-//Controllers handle HTTP, services handle business logic, and models handle database interaction.
 
 import { Request, Response } from 'express';
 import { catchAsync } from '../../utils/catchAsync';
 import { sendResponse } from '../../utils/sendResponse';
+import { ITour } from './tour.interface';
 import { TourService } from './tour.service';
 
 const createTour = catchAsync(async (req: Request, res: Response) => {
-    const result = await TourService.createTour(req.body);
+    const payload: ITour = {
+        ...req.body,
+        images: (req.files as Express.Multer.File[]).map(file => file.path)
+    }
+    const result = await TourService.createTour(payload);
     sendResponse(res, {
         statusCode: 201,
         success: true,
@@ -16,10 +20,9 @@ const createTour = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllTours = catchAsync(async (req: Request, res: Response) => {
-    //It doesn't know how the tours are fetched; it just delegates the task to tourService. 
+
     const query = req.query
     const result = await TourService.getAllTours(query as Record<string, string>);
-    // Record<Keys, Type> is a built-in utility type in TypeScript. It's a shorthand way to define an object type where you know the type of the keys and the type of the values, but you don't know the exact property names in advance.
     sendResponse(res, {
         statusCode: 200,
         success: true,
@@ -29,9 +32,22 @@ const getAllTours = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getSingleTour = catchAsync(async (req: Request, res: Response) => {
+    const slug = req.params.slug
+    const result = await TourService.getSingleTour(slug);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: 'Tour retrieved successfully',
+        data: result,
+    });
+});
 const updateTour = catchAsync(async (req: Request, res: Response) => {
-
-    const result = await TourService.updateTour(req.params.id, req.body);
+    const payload: ITour = {
+        ...req.body,
+        images: (req.files as Express.Multer.File[]).map(file => file.path)
+    }
+    const result = await TourService.updateTour(req.params.id, payload);
     sendResponse(res, {
         statusCode: 200,
         success: true,
@@ -39,7 +55,6 @@ const updateTour = catchAsync(async (req: Request, res: Response) => {
         data: result,
     });
 });
-
 const deleteTour = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
     const result = await TourService.deleteTour(id);
@@ -50,8 +65,19 @@ const deleteTour = catchAsync(async (req: Request, res: Response) => {
         data: result,
     });
 });
+const getSingleTourType = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const result = await TourService.getSingleTourType(id);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: 'Tour type retrieved successfully',
+        data: result,
+    });
+});
 const getAllTourTypes = catchAsync(async (req: Request, res: Response) => {
-    const result = await TourService.getAllTourTypes();
+    const query = req.query;
+    const result = await TourService.getAllTourTypes(query as Record<string, string>);
     sendResponse(res, {
         statusCode: 200,
         success: true,
@@ -60,11 +86,9 @@ const getAllTourTypes = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-
 const createTourType = catchAsync(async (req: Request, res: Response) => {
-    // const { name } = req.body;
-    // const result = await TourService.createTourType(name);
-    const result = await TourService.createTourType(req.body);
+    const { name } = req.body;
+    const result = await TourService.createTourType(name);
     sendResponse(res, {
         statusCode: 201,
         success: true,
@@ -75,8 +99,8 @@ const createTourType = catchAsync(async (req: Request, res: Response) => {
 
 const updateTourType = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
-    // const { name } = req.body;
-    const result = await TourService.updateTourType(id, req.body);
+    const { name } = req.body;
+    const result = await TourService.updateTourType(id, name);
     sendResponse(res, {
         statusCode: 200,
         success: true,
@@ -99,9 +123,11 @@ export const TourController = {
     createTour,
     createTourType,
     getAllTourTypes,
+    getSingleTourType,
     deleteTourType,
     updateTourType,
     getAllTours,
+    getSingleTour,
     updateTour,
     deleteTour,
 };

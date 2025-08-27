@@ -12,6 +12,9 @@ export const validateRequest = (zodSchema: AnyZodObject) =>
         // checking input
         try {
             // console.log('old body', req.body);
+            if (req.body.data) {
+                req.body = JSON.parse(req.body.data)
+            }
             req.body = await zodSchema.parseAsync(req.body)
             // console.log('new body', req.body);
             next()
