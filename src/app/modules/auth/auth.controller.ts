@@ -165,7 +165,7 @@ const setPassword = catchAsync(async (req: Request, res: Response, next: NextFun
 })
 const forgotPassword = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-
+    // TODO: Add ZodValidation so that users cannot use the route without an email
     const { email } = req.body;
 
     await AuthServices.forgotPassword(email);

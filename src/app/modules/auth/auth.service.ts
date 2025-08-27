@@ -6,6 +6,7 @@ import bcryptjs from 'bcryptjs'
 import { createNewAccessTokenWithRefreshToken, createUserTokens } from "../../utils/userTokens";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { envVars } from "../../config/env";
+import { sendEmail } from "../../utils/setEmail";
 // import { generateToken, verifyToken } from "../../utils/jwt";
 // import { envVars } from "../../config/env";
 // import { JwtPayload } from "jsonwebtoken";
