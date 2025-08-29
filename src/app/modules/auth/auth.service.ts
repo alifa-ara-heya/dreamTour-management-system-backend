@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import AppError from "../../errorHelpers/AppError"
 import httpStatus from 'http-status-codes';
 import { IsActive, IAuthProvider, IUser } from "../user/user.interface"

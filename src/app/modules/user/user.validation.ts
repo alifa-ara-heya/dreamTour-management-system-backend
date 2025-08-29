@@ -67,19 +67,6 @@ export const updateUserZodSchema = z.object({
         .optional(), //createUserZodSchema did not have it, because it was required then. but for updating, this is optional
 
     // password requirements: 1 uppercase, 1 special character, 1 digit, 8 characters min
-    password: z
-        .string({
-            required_error: 'Password is required',
-        }).min(6)
-        .regex(/[A-Z]/,
-            { message: 'Password must contain at least one uppercase letter' })
-        .regex(/[a-z]/,
-            { message: 'Password must contain at least one lowercase letter' })
-        .regex(/[0-9]/,
-            { message: 'Password must contain at least one number' })
-        .regex(/[^A-Za-z0-9]/,
-            { message: 'Password must contain at least one special character' })
-        .optional(),
     phone: z
         .string({ invalid_type_error: "Phone Number must be a string" })
         .regex(

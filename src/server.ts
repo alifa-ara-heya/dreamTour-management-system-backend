@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import app from "./app";
 import { envVars } from "./app/config/env";
 import { superAdmin } from "./app/utils/seedSuperAdmin";
+import { connectRedis } from "./app/config/redis.config";
 
 let server: Server;
 
@@ -30,6 +31,7 @@ superAdmin(); */
 // but we need to run these functions one by one after starting the server, that's why we will use IIFE inside async
 
 (async () => {
+    await connectRedis()
     await startServer()
     await superAdmin() //to create a superAdmin, if it doesn't exist
 })();
