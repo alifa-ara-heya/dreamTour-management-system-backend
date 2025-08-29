@@ -94,7 +94,12 @@ const createBooking = async (payload: Partial<IBooking>, userId: string) => {
 
         const sslPayment = await SSLService.sslPaymentInit(sslPayload)
 
-        console.log(sslPayment);
+        /* The line `console.log(sslPayment);` is logging the `sslPayment` object to the console. This
+        is a common practice in programming for debugging purposes or to inspect the data returned
+        from a function or API call. By logging the `sslPayment` object, the developer can view its
+        structure, properties, and values to ensure that the SSL payment initialization process is
+        working correctly and to troubleshoot any issues that may arise during the payment flow. */
+        // console.log(sslPayment);
 
 
         await session.commitTransaction(); //transaction

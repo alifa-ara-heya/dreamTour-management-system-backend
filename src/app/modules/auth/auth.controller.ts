@@ -68,7 +68,6 @@ const credentialsLogin = catchAsync(async (req: Request, res: Response, next: Ne
 })
 
 // get new access token
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getNewAccessToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const refreshToken = req.cookies.refreshToken;
 
@@ -94,7 +93,6 @@ const getNewAccessToken = catchAsync(async (req: Request, res: Response, next: N
 })
 
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logout = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
     res.clearCookie("accessToken", {
@@ -134,7 +132,6 @@ const changePassword = catchAsync(async (req: Request, res: Response, next: Next
     })
 })
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const resetPassword = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
     const decodedToken = req.user
@@ -178,7 +175,6 @@ const forgotPassword = catchAsync(async (req: Request, res: Response, next: Next
     })
 })
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const googleCallbackController = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     let redirectTo = req.query.state ? req.query.state as string : '';
 
