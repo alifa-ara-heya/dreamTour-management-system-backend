@@ -86,7 +86,7 @@ router.post("/register",
 router.get('/all-users', checkAuth(Role.ADMIN, Role.SUPER_ADMIN), UserControllers.getAllUsers)
 
 router.get("/me", checkAuth(...Object.values(Role)), UserControllers.getMe)
-router.get("/:id", checkAuth(...Object.values(Role)), UserControllers.getSingleUser)
+router.get("/:id", checkAuth(Role.ADMIN, Role.SUPER_ADMIN), UserControllers.getSingleUser)
 
 //update route- api/v1/user/:id
 router.patch("/:id", validateRequest(updateUserZodSchema), checkAuth(...Object.values(Role)), UserControllers.updateUser)

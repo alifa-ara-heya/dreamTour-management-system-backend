@@ -24,7 +24,10 @@ app.use(passport.session())
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))
-app.use(cors())
+app.use(cors({
+    origin: envVars.FRONTEND_URL,
+    credentials: true
+}))
 
 // app.use("/api/v1/user", userRoutes)
 // we need to organize it, so moved it to routes/index.ts

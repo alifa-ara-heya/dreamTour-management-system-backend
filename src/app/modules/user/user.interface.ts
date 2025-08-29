@@ -38,4 +38,5 @@ export interface IUser {
     auths: IAuthProvider[]; //this is an array because even if the user uses google login, he might later update his password to convert the google login to a credential based login
     bookings?: Types.ObjectId[] //the booking ids of a user
     guides?: Types.ObjectId[] //which guides guided this user
+    createdAt?: Date
 }
