@@ -72,7 +72,7 @@ const validatePayment = (payload) => __awaiter(void 0, void 0, void 0, function*
             method: "GET",
             url: `${env_1.envVars.SSL.SSL_VALIDATION_API}?val_id=${payload.val_id}&store_id=${env_1.envVars.SSL.STORE_ID}&store_passwd=${env_1.envVars.SSL.STORE_PASS}`
         });
-        // console.log("sslcomeerz validate api response", response.data);
+        console.log("sslcomeerz validate api response", response.data);
         yield payment_model_1.Payment.updateOne({ transactionId: payload.tran_id }, { paymentGatewayData: response.data }, { runValidators: true });
     }
     catch (error) {
