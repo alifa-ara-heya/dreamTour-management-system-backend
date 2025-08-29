@@ -1,17 +1,18 @@
 import { model, Schema } from "mongoose";
 import { IPayment, PAYMENT_STATUS } from "./payment.interface";
 
+
 const paymentSchema = new Schema<IPayment>({
     booking: {
         type: Schema.Types.ObjectId,
         ref: "Booking",
         required: true,
-        unique: true
+        unique: true,
     },
     transactionId: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
     },
     status: {
         type: String,
@@ -20,16 +21,14 @@ const paymentSchema = new Schema<IPayment>({
     },
     amount: {
         type: Number,
-        required: true
+        required: true,
     },
     paymentGatewayData: {
-        type: Schema.Types.Mixed, //because payment data was any type
-
+        type: Schema.Types.Mixed
     },
-    invoiceURL: {
+    invoiceUrl: {
         type: String
     }
-
 }, {
     timestamps: true
 })
