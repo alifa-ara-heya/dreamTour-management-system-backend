@@ -12,44 +12,43 @@ import "./app/config/passport"
 import { envVars } from "./app/config/env";
 
 
-
 const app = express();
+// 1. Trust the proxy to get correct IP and protocol from Vercel
+app.set("trust proxy", 1);
+
+// 2. Enable CORS for all routes
+app.use(cors({
+    origin: envVars.FRONTEND_URL,
+    credentials: true
+}));
+
+// 3. Parse cookies
+app.use(cookieParser());
+
+// 4. Parse JSON and URL-encoded bodies
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// 5. Set up session and passport (if you use them)
 app.use(expressSession({
     secret: envVars.EXPRESS_SESSION_SECRET,
     resave: false,
     saveUninitialized: false
-}))
+}));
 app.use(passport.initialize());
-app.use(passport.session())
-app.use(cookieParser());
-app.use(express.json());
-app.set("trust proxy", 1);
-app.use(express.urlencoded({ extended: true }))
-app.use(cors({
-    origin: envVars.FRONTEND_URL,
-    credentials: true
-}))
+app.use(passport.session());
 
-
-// app.use("/api/v1/user", userRoutes)
-// we need to organize it, so moved it to routes/index.ts
-
-app.use("/api/v1", router)
-
+// 6. Your API routes
+app.use("/api/v1", router);
 
 app.get("/", (req: Request, res: Response) => {
     res.status(200).json({
         message: "Welcome to tour management system backend"
-    })
-})
+    });
+});
 
-// global error handler
-app.use(globalErrorHandler)
-
-// not found route (must be used after global error handler)
-app.use(notFound)
-
-
+// 7. Your error handlers
+app.use(globalErrorHandler);
+app.use(notFound);
 
 export default app;
-
