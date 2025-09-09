@@ -183,7 +183,7 @@ const createTourType = async (payload: ITourType) => {
         throw new Error("Tour type already exists.");
     }
 
-    return await TourType.create({ name });
+    return await TourType.create({ name: payload });
 };
 const getAllTourTypes = async (query: Record<string, string>) => {
     const queryBuilder = new QueryBuilder(TourType.find(), query)
